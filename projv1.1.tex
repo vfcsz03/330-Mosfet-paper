@@ -1,0 +1,365 @@
+\documentclass{article}
+\title{Cadence Project: Part 1}
+\author{Frank Yee(109374525),Ricky Zhang(109311456)}
+\date{Nov 2016}
+
+\usepackage{indentfirst}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+
+\begin{document}
+   \maketitle
+   \newpage
+   \tableofcontents
+   \newpage
+   \section{Introduction}
+   \par This project models and examines MOS transistors. By using Cadence Virtuoso, the designs of the N-Mos and P-Mos can be modified on the transistor-level for behavior analysis. 
+   \par
+   Given parameters for this project: 
+   \begin{itemize}
+   \item For 0.5 $\mu$m CMOS  technology:
+   \begin{itemize}
+   \item Vdd = 5V, 
+   \item V$_{Tn0}$= 0.73V, k$\prime$n= $\mu$nCox = 115$\mu$A/V$^{2}$,
+   \item V$_{Tp0}$=-0.94V, k$\prime$p = $\mu$pCox = 37$\mu$A/V$^{2}$
+   \end{itemize}
+   \item  Long channel transistor characteristics:
+   \begin{itemize}
+   \item C$_{ox}$=2.5$\cdot$10$^{-3}$ F/m$^{2}$
+   \item L$_{S}$ = L$_{D}$ = 1.5 $\mu$m
+   \begin{itemize}
+   \item Nmos:
+   \begin{itemize}   
+   \item C$_{j}$ = 4.16$\cdot$10$^{-4}$F/m$^{2}$, 
+   \item C$_{jsw}$ = 3.26$\cdot$10$^{-10}$F/m,
+   \item C$_{GD0}$=C$_{GS0}$=1.93$\cdot$10$^{-10}$F/m.
+   \end{itemize}
+   \end{itemize}
+   \begin{itemize}
+   \item Pmos:
+   \begin{itemize}   
+   \item C$_{j}$ = 7.1$\cdot$10$^{-4}$F/m$^{2}$, 
+   \item C$_{jsw}$ = 2.18$\cdot$10$^{-10}$F/m,
+   \item C$_{GD0}$=C$_{GS0}$=2.28$\cdot$10$^{-10}$F/m.
+   \end{itemize}
+   \end{itemize}
+   \end{itemize}
+   \end{itemize}
+   \newpage
+   \section{Problem 1}
+   First R$_{sqn}$ and R$_{sqp}$ are calculated in Problem 1.A.Then, R$_{sqn}$ and R$_{sqp}$ are later used in Problem 1.B to determine the corresponding pull-up and pull-down times (t$_{pHL}$, t$_{pLH}$). Minimum sized Nmos and Pmos transistors are defined as:
+   \begin{displaymath}
+   W_{N}=1.8\mu m, W_{P}=1.8 \mu m, L_{N}= L_{P}=0.6\mu m
+   \end{displaymath}
+   \subsection{Problem 1.A}
+   By plotting the I$_{d}$ vs V$_{ds}$ characteristics, R$_{eqn}$, and R$_{eqp}$ can be estimated using :
+   \begin{displaymath}
+   R_{eq}= \frac{R_{on1(Vout=Vdd)}+ R_{on2(Vout=Vdd/2)}}{2}
+   \end{displaymath}
+   where
+   \begin{displaymath}
+   R_{on1(Vout=Vdd)}= V_{dd}/I_{d(V_{out}=V_{dd})} 
+   \end{displaymath}
+   \begin{displaymath}
+   R_{on2(Vout=Vdd/2)}= V_{dd}/I_{d(V_{out}=V_{dd/2})} 
+   \end{displaymath}
+\\
+ \begin{figure}
+   \centering
+For Nmos:
+\\
+	\includegraphics[width=\textwidth]{1aNmosRon1}
+	\\R$_{on1}$=8.2025k\\
+	\includegraphics[width=\textwidth]{1aNmosRon2}
+    \\R$_{on2}$=4.376k\\
+For Pmos:
+\\
+	\includegraphics[width=\textwidth]{1aPmosRon1&Ron2}
+	\\R$_{on1}$=7.821k and R$_{on2}$=12.95k\\
+\end{figure}
+Calculations based on Virtuoso simulation:
+   \\
+   Nmos:
+   \begin{gather}
+   R_{on1(Vout=Vdd)}=V_{dd}/I_{d(V_{out}=V_{dd})}=8.2025k                  
+   \\
+   R_{on2(Vout=Vdd/2)}= V_{dd}/I_{d(V_{out}=V_{dd/2})}=4.376k
+   \\
+   R_{eqn}= \frac{{8.2025k}+{4.376k}}{2} =6.2892k
+   \end{gather}
+   To determine R$_{sqn}$, use:
+   \begin{displaymath}
+   R_{sqn}= \frac {W_{n}}{L_{n}} \cdot R_{eqn} 
+   \end{displaymath}
+   \begin{gather}
+   R_{sqn}= \frac {1.8\mu m}{.6\mu m} \cdot 6.2892k= 18.868k
+   \end{gather}
+   Pmos:
+   \begin{gather}
+    R_{on1(Vout=Vdd)}=V_{dd}/I_{d(V_{out}=V_{dd})}=7.821k                  
+   \\
+   R_{on2(Vout=Vdd/2)}= V_{dd}/I_{d(V_{out}=V_{dd/2})}=12.95k
+   \\
+   R_{eqp}= \frac{{7.821k}+{12.95k}}{2} =10.39k
+   \end{gather}
+   To determine R$_{sqp}$, use:
+   \begin{displaymath}
+   R_{sqp}= \frac {W_{p}}{L_{p}} \cdot R_{eqp} 
+   \end{displaymath}
+   \begin{gather}
+   R_{sqp}= \frac {1.8\mu m}{.6\mu m} \cdot 10.39k= 31.157k
+   \end{gather}
+   Using simulations on Cadence Virtuoso to determine corresponding R$_{on1}$, and R$_{on2}$.
+	\newpage
+   \subsection{Problem 1.B}
+    Using R$_{sqn}$ and R$_{sqp}$, from Problem 1.A, t$_{pHL}$, t$_{pLH}$ can be determined with a capacitance load of 15pF as shown in the figure below:
+   \\
+   \begin{figure}[h]
+   \centering
+   \includegraphics[scale=1]{figure1b}
+   \end{figure}
+   \\
+Hand calculations:
+\\
+Calculating t$_{pHL}$ using (4):
+	\begin{gather}	
+	t_{pHL}=.69R_{n}C_{L}
+	\\
+	R_{n}= \frac{L_{n}}{W_{n}}\cdot R_{sqn}
+	\\
+	R_{n}= \frac{.6\mu m}{1.8\mu m}\cdot 18.868k =6.289k
+	\\
+	t_{pHL}=.69(6.289k)(15pF)= 65ns
+	\end{gather}	
+\\
+Calculating t$_{pLH}$ using (8):
+	\begin{gather}	
+	t_{pLH}=.69R_{p}C_{L}
+	\\
+	R_{p}= \frac{L_{p}}{W_{p}}\cdot R_{sqp}
+	\\
+	R_{p}= \frac{.6\mu m}{3.6\mu m}\cdot 31.157k =5.19k
+	\\
+	t_{pLH}=.69(5.19k)(15pF)= 53ns
+	\end{gather}
+	\newpage	  
+\begin{figure}[h]
+   \centering
+   Simulations using Cadence Virtuoso :
+   \includegraphics[width=\textwidth]{1bTPHLsim}\\
+   \includegraphics[width=\textwidth]{1bTPLHsim}\\
+   t$_{pHL}$=69.18ns and t$_{pLH}$=50.96ns (respectively)
+   \end{figure}
+\begin{tabular}{ |p{3cm}||p{3cm}|p{3cm}|}
+ \hline
+ \multicolumn{3}{|c|}{Comparison(ns) with 15pF load:} \\
+ \hline
+  &t$_{pHL}$ & t$_{pLH}$\\
+ \hline
+ Hand Calc. & 65 &53 \\
+ Simulation  & 69.18 &50.96 \\
+ \hline
+ \end{tabular}\\
+Calculations and simulations are fairly close.
+   \newpage
+   \subsection{Problem 1.C}
+   First calculating the value of the internal capacitance of the inverter, then finding the effective capacitance because the load capacitance is now comparable(10fF):
+   \begin{displaymath}
+   C_{internal}=C_{1,Pmos} + C_{2,Nmos}
+   \end{displaymath}    
+   where
+   \begin{displaymath}
+   C_{1,Pmos}= C_{DBp}+C_{GDp}=C_{j} \cdot L_{D} \cdot W_{p} + C_{jsw}(2L_{d}+W_{p})+ 2C_{GDO} \cdot W_{p}
+   \end{displaymath}
+   \begin{gather}
+   =(7.1 \cdot 10^{-4})( 1.5\mu m)(3.6\mu m)+ 
+   \\(2.18\cdot 10^{-10})(2( 1.5\mu m)+(3.6\mu m))+
+   \\ 2(2.28 \cdot 10^{-10})(3.6\mu m)
+   \end{gather}
+   \begin{displaymath}
+   C_{1,Nmos}= C_{DBn}+C_{GDn}=C_{j} \cdot L_{D} \cdot W_{n} + C_{jsw}(2L_{d}+W_{n})+ 2C_{GDO} \cdot W_{n}
+   \end{displaymath}
+   \begin{gather}
+   =(4.16 \cdot 10^{-4})( 1.5\mu m)(1.8\mu m)+ 
+   \\(3.26\cdot 10^{-10})(2( 1.5\mu m)+(1.8\mu m))+
+   \\ 2(1.93 \cdot 10^{-10})(1.8\mu m)
+   \end{gather}
+therefore;
+	\begin{gather}
+	C_{internal}=6.914 \cdot 10^{-15} + 3.2748 \cdot 10^{-15} = 10.189fF
+	\\	C_{Leff}= C_{internal} + 10fF = 20.189fF
+	\end{gather}
+	Using C$_{Leff}$(24) to find  t$_{pHL}$ and t$_{pLH}$ for a load of 10fF:
+	\begin{gather}
+	t_{pLH}=.69R_{p}C_{Leff}
+	\\
+	t_{pLH}=.69(5.19k)(20.189F)= 72.3pS
+	\\	
+	t_{pHL}=.69R_{n}C_{Leff}
+	\\
+	t_{pHL}=.69(6.289k)(20.189F)= 87.61nS
+	\end{gather}
+	\newpage	
+\begin{center}
+	Simulations using Cadence Virtuoso :\\
+	\includegraphics[width=\textwidth]{1cTPHL}\\
+	\includegraphics[width=\textwidth]{1cTPLH}\\
+	t$_{pHL}$=100.2ps and t$_{pLH}$=71ps (respectively)
+\begin{tabular}{|p{3cm}||p{3cm}|p{3cm}|}
+ \hline
+ \multicolumn{3}{|c|}{Comparison(ps) with 10fF load:} \\
+ \hline
+  &t$_{pHL}$ & t$_{pLH}$\\
+ \hline
+ Hand Calc. & 87.61 &72.3 \\
+ Simulation  & 100.2 &71 \\
+ \hline
+ \end{tabular}
+\end{center}
+t$_{pLH}$ are fairly close, however there is a difference of ~13ps for t$_{pHL}$. t$_{pLH}$  remains to have a shorter delay than t$_{pHL}$ in both cases.
+   \newpage
+   \section{Problem 2}
+   For chain of inverters the following expression is used to calculate the delay.
+   \begin{displaymath}
+   t_{p}=t_{p0}(1+f/\gamma)
+   \end{displaymath}
+   Where
+  \begin{itemize}
+  \item t$_{p0}$ is the intrinsic delay
+  \item f is fanout
+  \item $\gamma$ =  $\frac{C_{intrinsic}}{C_{gate}}$, the ratio of input intrinsic to input gate capacitance
+  \end{itemize}
+  \subsection{Problem 2.A}
+   The propagation delay of the minimum sized inverter with a load of the minimum sized inverter and the propagation delay of the minimum sized inverter with a load of 4 times the minimum size can be used to help calculate t$_{p0}$ and $\gamma$.
+   \par
+   Schematic for transistor sizing:\\
+   \includegraphics[width=\textwidth]{inverter}\\
+   4x minimized; W$_{n}$= 7.2$\mu$ m , W$_{p}$= 14.4$\mu$ m\\
+   \includegraphics[width=\textwidth]{inverter4x}
+   \newpage
+  Timing simulation for 1:1 (minimum sized inverter with a load of the minimum sized inverter:\\
+   \includegraphics[width=\textwidth]{2aTPHL}\\
+   \includegraphics[width=\textwidth]{2aTPLH}
+   \newpage
+   Timing simulation for 1:4 (minimum sized inverter with a load of 4 times the minimum size):\\
+   \includegraphics[width=\textwidth]{2aTPHL4XSizing}\\
+   \includegraphics[width=\textwidth]{2aTPLH4XSizing}\\
+   By taking the average, t$_{p}$ can be defined as:
+\begin{displaymath}
+t_{p}= \frac{t_{pHL}+t_{pLH}}{2}
+\end{displaymath} 
+\begin{center}  
+	\begin{tabular}{|p{2cm}||p{2cm}|p{2cm}|p{2cm}|}
+ 	\hline
+ 	\multicolumn{4}{|c|}{Delay from simulations(ps)} \\
+ 		\hline
+  		&t$_{pHL}$ & t$_{pLH}$ & t$_{p}$\\
+ 		\hline   
+ 		1:1 & 82.54 &60.361& 71.452 \\
+	 	1:4 & 196.93 &138.68&167.805 \\
+ 		\hline
+ 	\end{tabular}
+\end{center}
+\newpage
+Using these times, t$_{p0}$ and $\gamma$ can now be calculated:
+\begin{gather}
+71.452ps=t_{p0}(1+ \frac{1}{\gamma})\\
+167.805ps=t_{p0}(1+\frac{4}{\gamma})\\
+\frac{71.452ps}{167.805ps} =\frac{t_{p0}(1+\frac{1}{\gamma})}{t_{p0}(1+\frac{4}{\gamma})}\\
+.426=\frac{1+\frac{1}{\gamma}}{1+\frac{4}{\gamma}}\\
+.426(\gamma +4)= \gamma + 1\\
+.7032=.574\gamma \\
+\gamma=1.2251
+\end{gather}
+Plugging (35) into (29) to solve for t$_{p0}$:
+	\begin{gather}
+	71.452ps=t_{p0}(1+1 \frac{1}{1.2251})\\
+	71.452ps=t_{p0}(1.816)\\
+	t_{p0}=39.35ps
+	\end{gather}
+	\newpage
+\subsection{Problem 2.B}
+Using calculated  t$_{p0}$ and $\gamma$, the circuit below is optimized:
+\begin{center}
+\includegraphics[width=\textwidth]{2bsch}
+\end{center}
+First determine the widths for each inverter. Given:
+\begin{displaymath}
+C_{g}=2\cdot C_{o} +LC_{ox}
+\end{displaymath}
+where:
+\begin{displaymath}
+ C_{o}=C_{GD0}=C_{GS0}=1.93\cdot 10^{-10}F/m.
+\end{displaymath}
+\begin{displaymath}
+ L= L_{S} = L_{D} = 1.5 \mu m and C_{ox}=2.5 \cdot 10^{-3} F/m^{2}
+\end{displaymath}
+Therefore:
+\begin{gather}
+C_{g}= 4.136 \frac{fF}{\mu m}
+\end{gather}
+Using C$_{g}$ (39) to find C$_{inv}$, where:
+\begin{gather}
+C_{inv} = 3 W_{min} C_{g} = 3(1.8\mu m)(4.136 \frac{fF}{\mu m}) = 22.3344fF
+\end{gather}
+Next determine h for transistor width calculations,
+\begin{displaymath}
+h=\sqrt[n]{GBF}
+\end{displaymath}
+where h=stage effort, N= number of stages, G = path logical effort, B= branching effort, and F= electrical effort.
+\begin{gather}
+	N=5\\
+	G=1\cdot 1 \cdot 1\cdot 1\cdot 1 =1\\
+	B=1 \cdot 4\cdot 1\cdot 2\cdot 1=8\\
+	F= \frac{256C_{inv}}{C_{inv}}=256\\
+	h=\sqrt[N]{GBF}= \sqrt[5]{1\cdot 8 \cdot 256} = 4.59
+	\end{gather}  
+Using h(45) and C$_{g}$ (39) to find the optimized widths of each transistor at each stage:
+\begin{gather}
+C_{5}=1\cdot 1\cdot \frac{256(22.3344)}{4.59}=1245.6fF\\
+W_{5}= \frac{1245.6}{3\cdot C_{g}}= 100.3\mu m\\
+W_{5n}= 100.3\mu m , W_{5p}= 200.6\mu m\\
+C_{4}=2\cdot 1\cdot \frac{1245.6fF}{4.59}=542.75fF\\
+W_{4}= \frac{542.75fF}{3\cdot C_{g}}= 43.73\mu m\\
+W_{4n}= 43.73\mu m , W_{4p}= 87.48\mu m\\
+C_{3}=1\cdot 1\cdot \frac{542.75fF}{4.59}=118.25fF\\
+W_{3}= \frac{118.25fF}{3\cdot C_{g}}= 9.53\mu m\\
+W_{3n}= 9.53\mu m , W_{3p}= 19.06\mu m\\
+C_{2}=4\cdot 1\cdot \frac{118.25fF}{4.59}=103.05fF\\
+W_{2}= \frac{103.05fF}{3\cdot C_{g}}= 8.305\mu m\\
+W_{2n}= 8.305\mu m , W_{2p}= 16.61\mu m\\
+C_{1}=1\cdot 1\cdot \frac{103.05fF}{4.59}=22.45fF\\
+W_{1}= \frac{22.45fF}{3\cdot C_{g}}= 1.8\mu m\\
+W_{1n}= 1.8\mu m , W_{1p}= 3.6\mu m
+\end{gather}
+Given:
+\begin{displaymath}
+D = \frac{t_{p}}{t_{p0}}= \sum_{j=1}^{N}P_{j} + \frac{N\sqrt[N]{H}}{\gamma}
+\end{displaymath}
+Using N (41), h(45), $\gamma$ (35), t$_{p0}$ (38) to find D(delay).
+\begin{gather}
+D = \frac{t_{p}}{39.35ps}=(1+1+1+1+1+1) + \frac{5\cdot h}{\gamma}= 5 + \frac{5\cdot 4.59}{1.2251}\\
+D = \frac{t_{p}}{39.35ps} = 23.733
+\end{gather}
+With D(62) normalized to  t$_{p0}$, to get t$_{p}$:
+\begin{gather}
+t_{p}= D \cdot 39.35ps = 23.733 \cdot 39.35ps= .934ns
+\end{gather}
+Using calculated widths (48),(51),(54),(57),and (60) construct the circuit as seen under problem 2.B. C$_{L}$=256 $\cdot$ C$_{in}$ (C$_{in}$ is the input capacitance of the minimum sized inverter);  C$_{L}$= 5.718pF.
+\begin{center}
+Simulation based on calculated parameters:\\
+\includegraphics[width=\textwidth]{2bTHPL&TPLH}\\
+\begin{tabular}{|p{2cm}||p{2cm}|p{2cm}|p{2cm}|}
+ 	\hline
+ 	\multicolumn{4}{|c|}{Delay(ns)} \\
+ 		\hline
+  		&t$_{pHL}$ & t$_{pLH}$ & t$_{p}$\\
+ 		\hline   
+ 		Simulation & 1.305 &1.221& 1.263 \\
+	 	Calculated & N/A &N/A&.934 \\
+ 		\hline
+ 	\end{tabular}
+\end{center}
+There is a .329ns difference, nearly a 35.2 $\%$ error. One suspected reason for such huge error can be because of virtuoso forced rounding of transistor widths. It did not take the exact widths as calculated (48),(51),(54),(57),and (60), but to the snapped to the nearest 5$^{th}$ hundredths. 
+\end{document}
